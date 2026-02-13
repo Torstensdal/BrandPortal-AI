@@ -1,11 +1,9 @@
 
-
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
   User, Company, AppState, TeamMemberRole, SocialPlatform, 
   CalendarEvent, PartnerPostState, ProspectProposal, AssetMetadata, 
   Theme, Partner, Campaign, Language, PhotoStudioStyle, SavedLandingPage,
-  /* Added Lead type to imports */
   Lead
 } from './types';
 
@@ -38,7 +36,6 @@ import FileSaver from 'file-saver';
 import { v4 as uuidv4 } from 'uuid';
 import { useLanguage } from './context/LanguageContext';
 import { fileToBase64 } from './utils/fileUtils';
-/* Added generateLogoUrl to imports */
 import { getDomainFromUrl, generateLogoUrl } from './utils/urlUtils';
 import { formatDateToYYYYMMDD, generateSchedule } from './utils/dateUtils';
 import { SyncIcon } from './components/icons/SyncIcon';
@@ -252,7 +249,6 @@ export const App: React.FC = () => {
     try {
         const content = await geminiService.generateIndustryPageContent(company, industry, talkingPoints, targetLanguage);
         
-        // Find det første billede som baggrund hvis muligt
         let bgUrl = '';
         if (assetIds.length > 0) {
             bgUrl = `asset:${assetIds[0]}`;
@@ -269,7 +265,7 @@ export const App: React.FC = () => {
         };
 
         const updatedPages = [...(company.savedLandingPages || []), newPage];
-        await handleUpdateCompany({ savedLandingPages: updatedPages });
+        handleUpdateCompany({ savedLandingPages: updatedPages });
     } catch (e) {
         console.error("Landing page generation failed", e);
         alert("Generering fejlede. Prøv igen.");
@@ -308,7 +304,7 @@ export const App: React.FC = () => {
             tagsStatus: 'completed'
         };
 
-        await handleUpdateCompany({ mediaLibrary: [...(company.mediaLibrary || []), newMeta] });
+        handleUpdateCompany({ mediaLibrary: [...(company.mediaLibrary || []), newMeta] });
     } catch (e) {
         console.error("Image enhancement failed", e);
         alert("Billedredigering fejlede.");
@@ -400,7 +396,7 @@ export const App: React.FC = () => {
         let finalCampaignId = campaignId;
         if (newCampaignName) {
             const newCampaign: Campaign = { id: `camp-${uuidv4()}`, name: newCampaignName, goal: topic, startDate: startDateStr, endDate: endDateStr, themeColor: '#6366f1' };
-            await handleUpdateCompany({ campaigns: [...(company.campaigns || []), newCampaign] });
+            handleUpdateCompany({ campaigns: [...(company.campaigns || []), newCampaign] });
             finalCampaignId = newCampaign.id;
         }
         const newEvents: CalendarEvent[] = [];
@@ -445,7 +441,7 @@ export const App: React.FC = () => {
     const page = company.savedLandingPages?.find(p => p.id === previewPageId);
     if (page) return <LandingPagePreview page={page} company={company} onClose={() => setPreviewPageId(null)} onLeadSubmit={async (l) => {
         const newLead: Lead = { ...l, id: uuidv4(), partnerId: '__company__', status: 'New', score: 50, submittedAt: new Date().toISOString(), activity: [{ id: uuidv4(), type: 'form_submission', description: 'Formular indsendt fra branche-side', timestamp: new Date().toISOString() }] };
-        await handleUpdateCompany({ leads: [...(company.leads || []), newLead] });
+        handleUpdateCompany({ leads: [...(company.leads || []), newLead] });
         alert("Tak for din henvendelse! Vi vender tilbage hurtigst muligt.");
     }} />;
   }

@@ -1,10 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SavedLandingPage, Company } from '../types';
 import { XMarkIcon } from './icons/XMarkIcon';
 import { SyncIcon } from './icons/SyncIcon';
 import { PartnerLogo } from './PartnerLogo';
 import { stripMarkdown } from '../utils/formatters';
+import * as assetStorage from '../utils/assetStorage';
 
 interface LandingPagePreviewProps {
   page: SavedLandingPage;
@@ -16,9 +17,20 @@ interface LandingPagePreviewProps {
 export const LandingPagePreview: React.FC<LandingPagePreviewProps> = ({ page, company, onClose, onLeadSubmit }) => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [heroImageUrl, setHeroImageUrl] = useState<string | null>(null);
 
-  const heroBg = page.content.hero.backgroundImageUrl;
-  const isHeroAsset = heroBg?.startsWith('asset:');
+  useEffect(() => {
+      const bg = page.content.hero.backgroundImageUrl;
+      if (bg?.startsWith('asset:')) {
+          const assetId = bg.replace('asset:', '');
+          assetStorage.getAsset(assetId).then(file => {
+              if (file) setHeroImageUrl(URL.createObjectURL(file));
+          });
+      } else if (bg) {
+          setHeroImageUrl(bg);
+      }
+      return () => { if (heroImageUrl?.startsWith('blob:')) URL.revokeObjectURL(heroImageUrl); };
+  }, [page.content.hero.backgroundImageUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,10 +64,10 @@ export const LandingPagePreview: React.FC<LandingPagePreviewProps> = ({ page, co
 
       <section className="relative min-h-[90vh] flex items-center pt-24 overflow-hidden">
           <div className="absolute inset-0 z-0">
-             {heroBg && (
+             {heroImageUrl && (
                  <img 
-                    src={heroBg.startsWith('asset:') ? '' : heroBg} // Vi skal egentlig bruge en hook her til assets
-                    className="w-full h-full object-cover opacity-10 blur-xl" 
+                    src={heroImageUrl} 
+                    className="w-full h-full object-cover opacity-20 blur-xl scale-110" 
                     alt="" 
                  />
              )}
@@ -83,7 +95,7 @@ export const LandingPagePreview: React.FC<LandingPagePreviewProps> = ({ page, co
                           </div>
                           <div className="space-y-2">
                               <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Email</label>
-                              <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-slate-50 border-0 rounded-2xl p-4 text-slate-900 outline-none focus:ring-2 focus:ring-brand-primary/20" required />
+                              <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-slate-50 border-0 rounded-2xl p-4 text-slate-900 outline-none focus:ring-2 focus:ring-brand-primary/20 required" required />
                           </div>
                           <div className="space-y-2">
                               <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Besked</label>
