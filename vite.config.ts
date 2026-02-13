@@ -4,19 +4,17 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   define: {
-    'process.env.API_KEY': JSON.stringify(process.env.API_KEY || ''),
+    // Dette sikrer at API_KEY bliver indsat korrekt under build
+    'process.env.API_KEY': JSON.stringify(process.env.API_KEY || '')
   },
   server: {
     port: 5173,
     strictPort: true,
-    // Binding to 0.0.0.0 ensures the server is reachable via localhost, 127.0.0.1, and IPv6 loopback.
-    host: '0.0.0.0',
-    fs: {
-      strict: false 
-    },
-    cors: true
+    host: '0.0.0.0'
   },
-  optimizeDeps: {
-    include: ['react', 'react-dom', 'uuid', 'jszip', 'file-saver']
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    minify: 'esbuild'
   }
 });
