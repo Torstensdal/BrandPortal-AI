@@ -1,4 +1,5 @@
-﻿import React, { useState, useEffect, useMemo } from 'react';
+
+import React, { useState, useEffect, useMemo } from 'react';
 import { AppCalendarEvent, Partner, Company, SocialPosts, PartnerPostState, Comment, User, SocialPlatform, Campaign, TeamMemberRole, CalendarEvent } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { XMarkIcon } from './icons/XMarkIcon';
@@ -147,7 +148,6 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = (props) => {
         };
         const finalCampaignId = await onSave(localEvent.id, activePartner.id, updates);
         
-        // Vigtigt: Opdater det lokale kampagnevalg med det nye ID med det samme for at undgå det "tomme felt"
         if (finalCampaignId) {
             setCampaignSelection(finalCampaignId);
         }
@@ -172,7 +172,6 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = (props) => {
               ...localEvent,
               id: `evt-${uuidv4()}`,
               campaignId: campaignIdInput,
-              // postsByPartner data er allerede opdateret i localEvent fra input-felterne
           };
           await onDuplicate(newEvent);
       } catch (e) {
@@ -216,10 +215,6 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = (props) => {
   const missingPlatforms = availablePlatforms.filter(p => !existingPlatforms.includes(p));
 
   const handleAddPlatform = (platform: SocialPlatform) => {
-      handleAddPlatformToState(platform);
-  };
-
-  const handleAddPlatformToState = (platform: SocialPlatform) => {
     handlePostContentChange(platform, '');
   };
 
@@ -268,7 +263,6 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = (props) => {
           <div className="flex flex-col p-6 sm:p-8 border-b border-[var(--border-primary)] flex-shrink-0 gap-6">
             <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-4">
                 <div className="flex flex-col gap-4 w-full lg:flex-1">
-                    {/* Dato Felt */}
                     <div className="flex items-center gap-4">
                         <span className="text-[11px] font-black uppercase tracking-widest text-brand-primary min-w-[80px]">DATO:</span>
                         <div className="flex-grow">
@@ -282,7 +276,6 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = (props) => {
                         </div>
                     </div>
                     
-                    {/* Tid Felt */}
                     <div className="flex items-center gap-4">
                         <span className="text-[11px] font-black uppercase tracking-widest text-brand-primary min-w-[80px]">TID:</span>
                         <div className="flex-grow">
@@ -296,7 +289,6 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = (props) => {
                         </div>
                     </div>
 
-                    {/* Kampagne Felt */}
                     <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-4">
                             <span className="text-[11px] font-black uppercase tracking-widest text-brand-primary min-w-[80px]">KAMPAGNE:</span>
@@ -330,7 +322,6 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = (props) => {
                     </div>
                 </div>
 
-                {/* Handlingsknapper (højre-justeret) */}
                 <div className="flex flex-wrap lg:flex-nowrap items-center justify-center lg:justify-end gap-2.5 shrink-0 w-full lg:w-auto">
                     <button 
                         onClick={handleGenerateClick} 
@@ -409,6 +400,7 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = (props) => {
           </div>
         </div>
       </div>
+    </div>
     <ConfirmationModal
         isOpen={isDeleteConfirmOpen}
         onClose={() => setIsDeleteConfirmOpen(false)}
