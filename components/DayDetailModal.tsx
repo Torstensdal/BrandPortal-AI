@@ -11,7 +11,6 @@ import { PartnerInfo } from './PartnerInfo';
 import { TrashIcon } from './icons/TrashIcon';
 import { ConfirmationModal } from './ConfirmationModal';
 import { PublishIcon } from './icons/PublishIcon';
-import { InstagramIcon } from './icons/InstagramAIcon';
 import { EditIcon } from './icons/EditIcon';
 import { PlusIcon } from './icons/PlusIcon';
 import { CalendarIcon } from './icons/CalendarIcon';
