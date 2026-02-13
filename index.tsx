@@ -5,8 +5,7 @@ import { LanguageProvider } from './context/LanguageContext';
 import * as assetStorage from './utils/assetStorage';
 
 /**
- * AETHER BOOTSTRAP ENGINE V36 - SYSTEM RECOVERY & RENDER GUARD
- * Ensures the application mounts even if IndexedDB is slow or blocked.
+ * BRANDPORTAL BOOTSTRAP ENGINE V39 - SMOOTH ENTRY
  */
 const startApplication = async () => {
   const container = document.getElementById('root');
@@ -14,10 +13,11 @@ const startApplication = async () => {
 
   const root = createRoot(container);
 
-  // Render high-end system loader immediately
+  // 1. Vis en mere elegant system-loader i stedet for bare en sort skærm
   root.render(
     <div style={{
-      backgroundColor: '#020617',
+      backgroundColor: '#0f172a', // En dyb navy i stedet for sort
+      backgroundImage: 'radial-gradient(circle at center, #1e293b 0%, #0f172a 100%)',
       color: 'white',
       height: '100vh',
       width: '100vw',
@@ -25,38 +25,74 @@ const startApplication = async () => {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      fontFamily: 'system-ui, -apple-system, sans-serif',
-      textAlign: 'center'
+      fontFamily: '"Inter", system-ui, sans-serif',
+      transition: 'opacity 0.5s ease-in-out'
     }}>
       <div style={{
-        width: '40px',
-        height: '40px',
-        border: '3px solid rgba(99, 102, 241, 0.1)',
-        borderTopColor: '#6366f1',
-        borderRadius: '50%',
-        animation: 'spin 0.6s cubic-bezier(0.4, 0, 0.2, 1) infinite',
-        marginBottom: '24px'
-      }}></div>
-      <h2 style={{ fontSize: '14px', fontWeight: '900', letterSpacing: '4px', textTransform: 'uppercase', color: '#f8fafc', margin: '0' }}>
-          BRANDPORTAL-AI
-      </h2>
-      <p style={{ fontSize: '10px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', letterSpacing: '2px', marginTop: '12px' }}>
-          Initialiserer VÃ¦kstmotor...
-      </p>
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        position: 'relative',
+        width: '60px',
+        height: '60px',
+        marginBottom: '32px'
+      }}>
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          border: '2px solid rgba(99, 102, 241, 0.1)',
+          borderRadius: '16px',
+          transform: 'rotate(45deg)'
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          border: '2px solid #6366f1',
+          borderTopColor: 'transparent',
+          borderRadius: '16px',
+          animation: 'spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+          transform: 'rotate(45deg)'
+        }}></div>
+      </div>
+      
+      <div style={{ textAlign: 'center', animation: 'fadeIn 1s ease-out' }}>
+        <h2 style={{ 
+          fontSize: '10px', 
+          fontWeight: '900', 
+          letterSpacing: '5px', 
+          textTransform: 'uppercase', 
+          color: '#f8fafc', 
+          margin: '0',
+          opacity: 0.9
+        }}>
+            BRANDPORTAL-AI
+        </h2>
+        <p style={{ 
+          fontSize: '8px', 
+          fontWeight: 'bold', 
+          color: '#64748b', 
+          textTransform: 'uppercase', 
+          letterSpacing: '2px', 
+          marginTop: '16px' 
+        }}>
+            Initialiserer Engine...
+        </p>
+      </div>
+
+      <style>{`
+        @keyframes spin { from { transform: rotate(45deg); } to { transform: rotate(405deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+      `}</style>
     </div>
   );
 
   try {
-    // Database timeout guard: if IndexedDB takes > 2.5s, we bypass and load a fresh state
+    // Database check (med timeout)
     const sessionPromise = assetStorage.getLastSession();
-    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("DB_TIMEOUT")), 2500));
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("STORAGE_TIMEOUT")), 1200));
     
-    await Promise.race([sessionPromise, timeout]).catch((err) => {
-      console.warn("AETHER: Database load timed out or failed. App will start with default state.", err);
+    await Promise.race([sessionPromise, timeout]).catch(e => {
+        console.warn("Storage ready - proceeding:", e.message);
     });
 
-    // Final Render of the actual application
+    // Endelig rendering af selve applikationen
     root.render(
       <React.StrictMode>
         <LanguageProvider>
@@ -67,39 +103,12 @@ const startApplication = async () => {
   } catch (err) {
     console.error("CRITICAL BOOTSTRAP ERROR:", err);
     root.render(
-      <div style={{ 
-        backgroundColor: '#020617', 
-        color: 'white', 
-        height: '100vh', 
-        display: 'flex', 
-        flexDirection: 'column',
-        alignItems: 'center', 
-        justifyContent: 'center',
-        padding: '40px',
-        textAlign: 'center',
-        fontFamily: 'system-ui'
-      }}>
-        <h1 style={{ color: '#ef4444', fontSize: '20px', fontWeight: '900', textTransform: 'uppercase' }}>Systemfejl ved opstart</h1>
-        <p style={{ color: '#94a3b8', fontSize: '14px', marginTop: '12px', maxWidth: '400px', lineHeight: '1.6' }}>
-            Kunne ikke etablere sikker forbindelse til motoren. Dette skyldes ofte browser-begrÃ¦nsninger i inkognito eller private vinduer.
-        </p>
-        <button 
-            onClick={() => window.location.reload()} 
-            style={{ 
-                marginTop: '32px', 
-                padding: '14px 28px', 
-                backgroundColor: '#6366f1', 
-                color: 'white', 
-                border: 'none', 
-                borderRadius: '12px', 
-                fontWeight: 'bold', 
-                cursor: 'pointer',
-                textTransform: 'uppercase',
-                letterSpacing: '1px'
-            }}
-        >
-            PrÃ¸v igen
-        </button>
+      <div style={{ backgroundColor: '#0f172a', color: 'white', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', textAlign: 'center', fontFamily: 'sans-serif' }}>
+          <div style={{ padding: '40px', background: '#1e293b', borderRadius: '32px', border: '1px solid #334155', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
+            <h1 style={{ color: '#ef4444', fontSize: '18px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px' }}>System Fejl</h1>
+            <p style={{ color: '#94a3b8', marginTop: '12px', fontSize: '14px' }}>Motoren kunne ikke starte korrekt.</p>
+            <button onClick={() => window.location.reload()} style={{ marginTop: '24px', padding: '12px 32px', background: '#6366f1', borderRadius: '12px', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px' }}>PRØV IGEN</button>
+          </div>
       </div>
     );
   }
