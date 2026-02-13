@@ -4,7 +4,7 @@ import {
   User, Company, AppState, TeamMemberRole, SocialPlatform, 
   CalendarEvent, PartnerPostState, ProspectProposal, AssetMetadata, 
   Theme, Partner, Campaign, Language, PhotoStudioStyle, SavedLandingPage,
-  Lead, SuccessStory
+  Lead, SuccessStory, LeadStatus
 } from './types';
 
 // Screens & Components
@@ -436,6 +436,49 @@ export const App: React.FC = () => {
       await handleUpdateCompany({ partners: updatedPartners });
   };
 
+  const handleStartDripCampaign = async (campaignId: string, contacts: { partnerId: string, contactId: string }[]) => {
+    if (!company) return;
+    const newActive = contacts.map(c => ({
+      id: uuidv4(),
+      campaignId,
+      partnerId: c.partnerId,
+      contactId: c.contactId,
+      currentStepIndex: 0,
+      status: 'active' as const
+    }));
+    await handleUpdateCompany({ 
+      activeDripCampaigns: [...(company.activeDripCampaigns || []), ...newActive] 
+    });
+    alert("Salgsautomatisering startet for de valgte kontakter!");
+  };
+
+  const handleCompleteDripTask = async (taskId: string) => {
+    if (!company) return;
+    const tasks = [...(company.activeDripCampaigns || [])];
+    const taskIdx = tasks.findIndex(t => t.id === taskId);
+    if (taskIdx === -1) return;
+
+    const task = tasks[taskIdx];
+    const campaign = company.dripCampaigns?.find(c => c.id === task.campaignId);
+    if (!campaign) return;
+
+    if (task.currentStepIndex + 1 < campaign.steps.length) {
+      tasks[taskIdx] = { ...task, currentStepIndex: task.currentStepIndex + 1 };
+    } else {
+      tasks[taskIdx] = { ...task, status: 'completed' };
+    }
+
+    await handleUpdateCompany({ activeDripCampaigns: tasks });
+  };
+
+  const handleUpdateLeadStatus = async (leadId: string, newStatus: LeadStatus) => {
+    if (!company) return;
+    const updatedLeads = (company.leads || []).map(l => 
+        l.id === leadId ? { ...l, status: newStatus } : l
+    );
+    await handleUpdateCompany({ leads: updatedLeads });
+  };
+
   const allPartners = useMemo(() => {
     const companyAsPartner: Partner = {
         id: '__company__', name: company?.name || '', website: company?.website || '', language: company?.language || 'da', 
@@ -511,8 +554,8 @@ export const App: React.FC = () => {
           {activeState === 'users' && <UsersScreen company={company} currentUser={user} isAdmin={currentUserRole === 'admin'} onInviteUser={async () => ""} onUpdateRole={async () => {}} onSimulateRole={() => {}} />}
           {activeState === 'integrations' && <IntegrationsScreen company={company} />}
           {activeState === 'prospecting' && <ProspectingScreen company={company} partners={company.partners} onClearProposal={() => {}} onGenerateProposal={async (pid) => { setIsGenerating(true); const p = await apiClient.generateGrowthPlan(token!, company.id, pid); handleUpdateCompany({ growthPlan: p }); setIsGenerating(false); }} proposal={null} isGenerating={isGenerating} />}
-          {activeState === 'drip_campaigns' && <DripCampaignsScreen company={company} token={token!} onSaveCampaign={(c) => handleUpdateCompany({ dripCampaigns: [...(company.dripCampaigns || []).filter(x => x.id !== c.id), c] })} onDeleteCampaign={(id) => handleUpdateCompany({ dripCampaigns: company.dripCampaigns?.filter(x => x.id !== id) })} onStartCampaign={async () => {}} onCompleteTask={() => {}} />}
-          {activeState === 'leads' && <LeadsScreen company={company} onUpdateLeadStatus={() => {}} />}
+          {activeState === 'drip_campaigns' && <DripCampaignsScreen company={company} token={token!} onSaveCampaign={(c) => handleUpdateCompany({ dripCampaigns: [...(company.dripCampaigns || []).filter(x => x.id !== c.id), c] })} onDeleteCampaign={(id) => handleUpdateCompany({ dripCampaigns: company.dripCampaigns?.filter(x => x.id !== id) })} onStartCampaign={handleStartDripCampaign} onCompleteTask={handleCompleteDripTask} />}
+          {activeState === 'leads' && <LeadsScreen company={company} onUpdateLeadStatus={handleUpdateLeadStatus} />}
         </main>
       </div>
     </div>
