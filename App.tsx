@@ -4,7 +4,7 @@ import {
   User, Company, AppState, TeamMemberRole, SocialPlatform, 
   CalendarEvent, PartnerPostState, ProspectProposal, AssetMetadata, 
   Theme, Partner, Campaign, Language, PhotoStudioStyle, SavedLandingPage,
-  Lead
+  Lead, SuccessStory
 } from './types';
 
 // Screens & Components
@@ -396,7 +396,7 @@ export const App: React.FC = () => {
         let finalCampaignId = campaignId;
         if (newCampaignName) {
             const newCampaign: Campaign = { id: `camp-${uuidv4()}`, name: newCampaignName, goal: topic, startDate: startDateStr, endDate: endDateStr, themeColor: '#6366f1' };
-            handleUpdateCompany({ campaigns: [...(company.campaigns || []), newCampaign] });
+            await handleUpdateCompany({ campaigns: [...(company.campaigns || []), newCampaign] });
             finalCampaignId = newCampaign.id;
         }
         const newEvents: CalendarEvent[] = [];
@@ -419,6 +419,23 @@ export const App: React.FC = () => {
     } finally { setIsGenerating(false); }
   };
 
+  const handleSuccessStoryAction = async (partnerId: string, storyId: string, action: 'approve' | 'feature' | 'reject') => {
+      if (!company) return;
+      const updatedPartners = company.partners.map(p => {
+          if (p.id === partnerId) {
+              const updatedStories = (p.successStories || []).map(s => {
+                  if (s.id === storyId) {
+                      return { ...s, status: action === 'approve' ? 'approved' : (action === 'feature' ? 'featured' : 'rejected') } as SuccessStory;
+                  }
+                  return s;
+              });
+              return { ...p, successStories: updatedStories };
+          }
+          return p;
+      });
+      await handleUpdateCompany({ partners: updatedPartners });
+  };
+
   const allPartners = useMemo(() => {
     const companyAsPartner: Partner = {
         id: '__company__', name: company?.name || '', website: company?.website || '', language: company?.language || 'da', 
@@ -434,14 +451,23 @@ export const App: React.FC = () => {
 
   if (activeState === 'partner_portal_simulation' && simulationPartnerId) {
     const virtualUser = { ...user, id: simulationPartnerId, partnerAccess: [{ companyId: company.id, partnerId: simulationPartnerId }] };
-    return <PartnerPortalScreen user={virtualUser} token={token || ""} company={company} isSimulation={true} onExitSimulation={() => { setSimulationPartnerId(null); setActiveState('partners'); }} onCompanyDataUpdate={handleUpdateCompany} onLeadSubmit={async () => {}} onSubmitSuccessStory={async () => {}} />;
+    return <PartnerPortalScreen user={virtualUser} token={token || ""} company={company} isSimulation={true} onExitSimulation={() => { setSimulationPartnerId(null); setActiveState('partners'); }} onCompanyDataUpdate={handleUpdateCompany} onLeadSubmit={async (l) => {
+        const newLead: Lead = { ...l, id: uuidv4(), partnerId: simulationPartnerId, status: 'New', score: 50, submittedAt: new Date().toISOString(), activity: [{ id: uuidv4(), type: 'form_submission', description: 'Formular indsendt fra partner-portalen', timestamp: new Date().toISOString() }] };
+        await handleUpdateCompany({ leads: [...(company.leads || []), newLead] });
+        alert("Din henvendelse er sendt!");
+    }} onSubmitSuccessStory={async (s) => {
+        const newStory: SuccessStory = { ...s, id: uuidv4(), status: 'new', submittedAt: new Date().toISOString() };
+        const updatedPartners = company.partners.map(p => p.id === simulationPartnerId ? { ...p, successStories: [...(p.successStories || []), newStory] } : p);
+        await handleUpdateCompany({ partners: updatedPartners });
+        alert("Succeshistorie indsendt til godkendelse!");
+    }} />;
   }
 
   if (previewPageId) {
     const page = company.savedLandingPages?.find(p => p.id === previewPageId);
     if (page) return <LandingPagePreview page={page} company={company} onClose={() => setPreviewPageId(null)} onLeadSubmit={async (l) => {
         const newLead: Lead = { ...l, id: uuidv4(), partnerId: '__company__', status: 'New', score: 50, submittedAt: new Date().toISOString(), activity: [{ id: uuidv4(), type: 'form_submission', description: 'Formular indsendt fra branche-side', timestamp: new Date().toISOString() }] };
-        handleUpdateCompany({ leads: [...(company.leads || []), newLead] });
+        await handleUpdateCompany({ leads: [...(company.leads || []), newLead] });
         alert("Tak for din henvendelse! Vi vender tilbage hurtigst muligt.");
     }} />;
   }
@@ -481,7 +507,7 @@ export const App: React.FC = () => {
           {activeState === 'calendar' && <CalendarScreen company={company} token={token!} onUpdateCompany={handleUpdateCompany} currentUser={user!} onGeneratePosts={handleGeneratePosts} isGenerating={isGenerating} />}
           {activeState === 'partners' && <PartnerScreen company={company} token={token!} onAddPartner={(p) => handleUpdateCompany({ partners: [...(company.partners || []), p] })} onEditPartner={(p) => handleUpdateCompany({ partners: company.partners?.map(x => x.id === p.id ? p : x) })} onDeletePartners={(ids) => handleUpdateCompany({ partners: company.partners?.filter(p => !ids.includes(p.id)) })} onGrantAccessToContacts={async () => {}} onMassUpdateAll={async () => {}} onRefreshPartner={() => {}} onSimulatePartnerPortal={setSimulationPartnerId} enrichmentStatus={null} onImportPartners={async () => {}} onBulkUpdatePartners={async (ids, u) => handleUpdateCompany({ partners: company.partners?.map(p => ids.includes(p.id) ? { ...p, ...u } : p) })} onUploadPartnerPlanPdf={async (pid, file) => { const id = uuidv4(); await assetStorage.saveAsset(id, file); handleUpdateCompany({ partners: company.partners?.map(p => p.id === pid ? { ...p, originalPlanPdfAssetId: `asset:${id}` } : p) }); return `asset:${id}`; }} />}
           {activeState === 'analytics' && <AnalyticsScreen company={company} token={token!} onUpdateCompany={handleUpdateCompany} />}
-          {activeState === 'growth' && <GrowthScreen company={company} onUpdateStrategy={async (s) => handleUpdateCompany({ contentStrategy: s })} onToggleStrategyLock={async () => handleUpdateCompany({ isContentStrategyLocked: !company.isContentStrategyLocked })} onSaveStrategyVersion={async (n) => handleUpdateCompany({ savedContentStrategies: [...(company.savedContentStrategies || []), { id: uuidv4(), name: n, content: company.contentStrategy!, createdAt: new Date().toISOString() }] })} onRestoreStrategyVersion={async (c) => handleUpdateCompany({ contentStrategy: c })} onDeleteStrategyVersion={async (id) => handleUpdateCompany({ savedContentStrategies: company.savedContentStrategies?.filter(v => v.id !== id) })} onUpdateRoadmapProgress={(p) => handleUpdateCompany({ roadmapProgress: p })} onGenerateIndustryPage={handleGenerateIndustryPage} onEnhanceImage={handleEnhanceImage} onPreviewPage={setPreviewPageId} />}
+          {activeState === 'growth' && <GrowthScreen company={company} onUpdateStrategy={async (s) => handleUpdateCompany({ contentStrategy: s })} onToggleStrategyLock={async () => handleUpdateCompany({ isContentStrategyLocked: !company.isContentStrategyLocked })} onSaveStrategyVersion={async (n) => handleUpdateCompany({ savedContentStrategies: [...(company.savedContentStrategies || []), { id: uuidv4(), name: n, content: company.contentStrategy!, createdAt: new Date().toISOString() }] })} onRestoreStrategyVersion={async (c) => handleUpdateCompany({ contentStrategy: c })} onDeleteStrategyVersion={async (id) => handleUpdateCompany({ savedContentStrategies: company.savedContentStrategies?.filter(v => v.id !== id) })} onUpdateRoadmapProgress={(p) => handleUpdateCompany({ roadmapProgress: p })} onGenerateIndustryPage={handleGenerateIndustryPage} onEnhanceImage={handleEnhanceImage} onPreviewPage={setPreviewPageId} onSuccessStoryAction={handleSuccessStoryAction} />}
           {activeState === 'users' && <UsersScreen company={company} currentUser={user} isAdmin={currentUserRole === 'admin'} onInviteUser={async () => ""} onUpdateRole={async () => {}} onSimulateRole={() => {}} />}
           {activeState === 'integrations' && <IntegrationsScreen company={company} />}
           {activeState === 'prospecting' && <ProspectingScreen company={company} partners={company.partners} onClearProposal={() => {}} onGenerateProposal={async (pid) => { setIsGenerating(true); const p = await apiClient.generateGrowthPlan(token!, company.id, pid); handleUpdateCompany({ growthPlan: p }); setIsGenerating(false); }} proposal={null} isGenerating={isGenerating} />}

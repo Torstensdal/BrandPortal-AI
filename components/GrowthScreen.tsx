@@ -1,6 +1,4 @@
 
-
-
 import React, { useState, useMemo, useEffect } from 'react';
 import {
   Company, Language, PhotoStudioStyle, BrandKit, JobListing,
@@ -25,6 +23,9 @@ import { DocumentIcon } from './icons/DocumentIcon';
 import { PartnerLogo } from './PartnerLogo';
 import { PlusIcon } from './icons/PlusIcon';
 import { EyeIcon } from './icons/EyeIcon';
+import { CheckCircleIcon } from './icons/CheckCircleIcon';
+import { XMarkIcon } from './icons/XMarkIcon';
+import { StarIcon } from './icons/StarIcon';
 
 interface GrowthScreenProps {
   company: Company;
@@ -37,6 +38,7 @@ interface GrowthScreenProps {
   onDeleteStrategyVersion: (id: string) => Promise<void>;
   onUpdateRoadmapProgress: (updatedRoadmapProgress: string[]) => void;
   onPreviewPage: (id: string) => void;
+  onSuccessStoryAction?: (partnerId: string, storyId: string, action: 'approve' | 'feature' | 'reject') => Promise<void>;
 }
 
 const PagePreviewCard: React.FC<{ page: SavedLandingPage; company: Company; onPreview: () => void }> = ({ page, company, onPreview }) => {
@@ -86,25 +88,24 @@ const PagePreviewCard: React.FC<{ page: SavedLandingPage; company: Company; onPr
     );
 };
 
-const SuccessStoriesManager: React.FC<any> = ({ company }) => {
+const SuccessStoriesManager: React.FC<{ company: Company, onAction?: any }> = ({ company, onAction }) => {
     const { t } = useLanguage();
     const allStories = useMemo(() => {
-        const stories: (SuccessStory & { partnerName: string; partnerLogo?: string })[] = [];
+        const stories: (SuccessStory & { partnerId: string, partnerName: string; partnerLogo?: string })[] = [];
         company.partners.forEach((p: any) => {
             if (p.successStories) {
                 p.successStories.forEach((s: any) => {
-                    stories.push({ ...s, partnerName: p.name, partnerLogo: p.logoUrl });
+                    stories.push({ ...s, partnerId: p.id, partnerName: p.name, partnerLogo: p.logoUrl });
                 });
             }
         });
-        /* Fix: SuccessStory uses submittedAt, not timestamp */
         return stories.sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
     }, [company.partners]);
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {allStories.length > 0 ? allStories.map(story => (
-                <div key={story.id} className="bg-[var(--bg-card)] border border-[var(--border-primary)] p-8 rounded-[2.5rem] shadow-2xl group hover:border-brand-primary/30 transition-all">
+                <div key={story.id} className="bg-[var(--bg-card)] border border-[var(--border-primary)] p-8 rounded-[3rem] shadow-2xl group hover:border-brand-primary/30 transition-all flex flex-col">
                     <div className="flex justify-between items-start mb-6">
                         <div className="flex items-center gap-4">
                             <PartnerLogo logoUrl={story.partnerLogo} partnerName={story.partnerName} className="h-10 w-10 rounded-xl" />
@@ -113,13 +114,23 @@ const SuccessStoriesManager: React.FC<any> = ({ company }) => {
                                 <p className="text-xs text-brand-primary font-black uppercase tracking-widest">{stripMarkdown(story.partnerName)}</p>
                             </div>
                         </div>
-                        <span className={`text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-widest ${story.status === 'approved' || story.status === 'featured' ? 'bg-brand-accent-green/20 text-brand-accent-green border border-brand-accent-green/30' : 'bg-[var(--bg-card-secondary)] text-[var(--text-muted)]'}`}>
+                        <span className={`text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-widest ${story.status === 'approved' || story.status === 'featured' ? 'bg-brand-accent-green/20 text-brand-accent-green border border-brand-accent-green/30' : (story.status === 'new' ? 'bg-brand-accent-amber/20 text-brand-accent-amber border border-brand-accent-amber/30' : 'bg-[var(--bg-card-secondary)] text-[var(--text-muted)]')}`}>
                             {story.status}
                         </span>
                     </div>
-                    <div className="text-sm text-[var(--text-secondary)] leading-relaxed italic mb-8 border-l-4 border-[var(--border-primary)] pl-6 py-2">
+                    <div className="text-sm text-[var(--text-secondary)] leading-relaxed italic mb-8 border-l-4 border-[var(--border-primary)] pl-6 py-2 flex-grow">
                         "{stripMarkdown(story.description)}"
                     </div>
+                    
+                    {onAction && story.status === 'new' && (
+                        <div className="flex gap-2 pt-6 border-t border-[var(--border-primary)]/50">
+                            <button onClick={() => onAction(story.partnerId, story.id, 'approve')} className="flex-1 py-3 bg-brand-accent-green text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:brightness-110 flex items-center justify-center gap-2"><CheckCircleIcon className="h-4 w-4" /> Godkend</button>
+                            <button onClick={() => onAction(story.partnerId, story.id, 'reject')} className="px-4 py-3 bg-[var(--bg-app)] text-brand-accent-red text-[10px] font-black uppercase rounded-xl hover:bg-brand-accent-red hover:text-white transition-all"><XMarkIcon className="h-4 w-4" /></button>
+                        </div>
+                    )}
+                    {onAction && story.status === 'approved' && (
+                        <button onClick={() => onAction(story.partnerId, story.id, 'feature')} className="w-full py-3 bg-brand-accent-purple text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:brightness-110 flex items-center justify-center gap-2"><StarIcon className="h-4 w-4" /> Fremhæv i Portal</button>
+                    )}
                 </div>
             )) : (
                 <div className="col-span-full text-center py-32 border-2 border-dashed border-[var(--border-primary)] rounded-[3rem] bg-[var(--bg-card)]/40">
@@ -202,7 +213,7 @@ export const GrowthScreen: React.FC<GrowthScreenProps> = (props) => {
                         />
                     </div>
                 )}
-                {activeTab === 'success' && <SuccessStoriesManager {...props} />}
+                {activeTab === 'success' && <SuccessStoriesManager company={props.company} onAction={props.onSuccessStoryAction} />}
                 {activeTab === 'roadmap' && <SaaSRoadmap company={props.company} onUpdateProgress={props.onUpdateRoadmapProgress} />}
             </div>
 
