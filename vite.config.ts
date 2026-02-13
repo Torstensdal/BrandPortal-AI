@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   define: {
-    // Dette sikrer at API_KEY bliver indsat korrekt under build
+    // Dette gør process.env.API_KEY tilgængelig i koden på klientsiden
     'process.env.API_KEY': JSON.stringify(process.env.API_KEY || '')
   },
   server: {
