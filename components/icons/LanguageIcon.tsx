@@ -1,0 +1,1 @@
+// Empty to prevent collision with LanguageIcon.tsx

@@ -52,6 +52,20 @@ const daTranslations: Translations = {
   "nav_settings_users": "Teamet",
   "nav_settings_integrations": "Forbundne Apps",
 
+  // PDF & Eksport
+  "export_pdf_button": "Eksport til PDF",
+  "export_word_button": "Eksport til Word",
+  "export_generating_pdf": "Genererer PDF...",
+  "export_pdf_success": "PDF genereret!",
+
+  // Roadmap
+  "roadmap_title": "Eksekverings Roadmap",
+  "roadmap_subtitle": "Følg jeres vej fra fundament til skalering.",
+  "roadmap_phase_foundation": "Fundament",
+  "roadmap_phase_activation": "Aktivering",
+  "roadmap_phase_scaling": "Skalering",
+  "roadmap_phase_innovation": "Innovation",
+
   // Dashboard
   "dashboard_welcome": "Velkommen,",
   "dashboard_subtitle": "Her er jeres aktuelle status og seneste aktiviteter",
@@ -597,18 +611,6 @@ const enTranslations: Translations = {
   "growth_tab_roadmap": "Roadmap",
   "growth_no_landing_pages": "No landing pages generated yet.",
   "growth_no_success_stories": "No success stories found yet.",
-  "doc_page_break": "Page Break",
-  "doc_unlock_section": "Unlock Section",
-  "doc_lock_section": "Lock Section",
-  "doc_toggle_page_break": "Toggle Page Break",
-  "doc_move_up": "Move Up",
-  "doc_move_down": "Move Down",
-  "doc_ai_rewrite": "AI Rewrite",
-  "doc_delete_section": "Delete Section",
-  "doc_version_name_label": "Name Your Version",
-  "doc_saving_version": "Saving...",
-  "doc_save_version_button": "Save Now",
-  "doc_upgrade_alert_status": "Plan under development",
 };
 
 const deTranslations: Translations = {
@@ -666,18 +668,6 @@ const deTranslations: Translations = {
   "growth_tab_roadmap": "Roadmap",
   "growth_no_landing_pages": "Noch keine Landing Pages generiert.",
   "growth_no_success_stories": "Noch keine Erfolgsgeschichten gefunden.",
-  "doc_page_break": "Seitenumbruch",
-  "doc_unlock_section": "Abschnitt entsperren",
-  "doc_lock_section": "Abschnitt sperren",
-  "doc_toggle_page_break": "Seitenumbruch umschalten",
-  "doc_move_up": "Nach oben verschieben",
-  "doc_move_down": "Nach unten verschieben",
-  "doc_ai_rewrite": "KI umschreiben",
-  "doc_delete_section": "Abschnitt löschen",
-  "doc_version_name_label": "Benennen Sie Ihre Version",
-  "doc_saving_version": "Speichern...",
-  "doc_save_version_button": "Jetzt speichern",
-  "doc_upgrade_alert_status": "Plan in Entwicklung",
 };
 
 export const translations: Record<Language, Translations> = {
