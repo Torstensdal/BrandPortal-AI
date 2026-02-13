@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { AppCalendarEvent, Partner, Company, SocialPosts, PartnerPostState, Comment, User, SocialPlatform, Campaign, TeamMemberRole, CalendarEvent } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { XMarkIcon } from './icons/XMarkIcon';
@@ -417,7 +417,5 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = (props) => {
         message={t('confirmation_deleteEventMessage')}
         confirmButtonText={t('modal_deleteButton')}
         variant="danger"
-      />
-    </>
-  );
+      />`n    </>`n  );`n};
 };
