@@ -1,7 +1,28 @@
-﻿{
-  "name": "brandportal-ai",
-  "version": "1.0.0",
-  "scripts": {
-    "start": "echo 'Static HTML - no build needed'"
-  }
+{
+    "name":  "brandportal-ai-enterprise",
+    "private":  true,
+    "type":  "module",
+    "scripts":  {
+                    "dev":  "vite",
+                    "build":  "vite build"
+                },
+    "dependencies":  {
+                         "@google/genai":  "0.14.0",
+                         "react":  "18.3.1",
+                         "react-dom":  "18.3.1",
+                         "jszip":  "3.10.1",
+                         "uuid":  "9.0.1",
+                         "file-saver":  "2.0.5",
+                         "docx":  "8.5.0",
+                         "jspdf":  "2.5.1",
+                         "html2canvas":  "1.4.1"
+                     },
+    "devDependencies":  {
+                            "vite":  "^5.0.0",
+                            "@vitejs/plugin-react":  "^4.3.1"
+                        },
+    "overrides":  {
+                      "react":  "18.3.1",
+                      "react-dom":  "18.3.1"
+                  }
 }
