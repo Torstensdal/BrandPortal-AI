@@ -1,11 +1,7 @@
 [build]
-  publish = "."
+  command = "npm run build"
+  publish = "dist"
 
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Content-Type = "text/html; charset=utf-8"
-    
 [[redirects]]
   from = "/*"
   to = "/index.html"
