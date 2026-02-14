@@ -6,3 +6,5 @@ dist/
 *.zip
 .vercel/
 .vercel
+
+index_files/
