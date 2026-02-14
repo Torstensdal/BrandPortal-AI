@@ -1,6 +1,11 @@
-[build]
+﻿[build]
   publish = "."
-  
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Type = "text/html; charset=utf-8"
+    
 [[redirects]]
   from = "/*"
   to = "/index.html"
