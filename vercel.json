@@ -1,5 +1,1 @@
-{
-  "buildCommand": "chmod +x node_modules/.bin/* && npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite"
-}
+{ "version": 2, "framework": "vite" }
