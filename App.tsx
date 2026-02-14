@@ -20,12 +20,17 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     const init = async () => {
+      try {
         const session = await assetStorage.getLastSession();
         const { user: u, token: t } = await apiClient.loginUser(session?.email || 'demo@brandportal-ai.com');
         setUser(u);
         const list = await apiClient.getCompaniesForUser(t);
         if (session?.companyId) setCompany(list.find(c => c.id === session.companyId) || list[0]);
-        setIsInitializing(false);
+        } catch (error) {
+        console.error('Init failed:', error);
+        setUser({ id: 'demo', name: 'Demo User', email: 'demo@brandportal-ai.com' });
+      }
+      setIsInitializing(false);
     };
     init();
   }, []);
