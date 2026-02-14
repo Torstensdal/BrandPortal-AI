@@ -1,11 +1,5 @@
-﻿{
+{
   "buildCommand": "chmod +x node_modules/.bin/* && npm run build",
   "outputDirectory": "dist",
-  "framework": "vite",
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ]
+  "framework": "vite"
 }

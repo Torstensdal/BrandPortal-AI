@@ -4,17 +4,15 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   define: {
-    'process.env.API_KEY': JSON.stringify(process.env.API_KEY || ''),
+    'process.env.API_KEY': JSON.stringify(process.env.API_KEY || '')
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    minify: 'esbuild'
   },
   server: {
     port: 5173,
-    strictPort: true,
-    host: '127.0.0.1',
-    hmr: {
-      overlay: false
-    }
-  },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json']
+    host: '127.0.0.1'
   }
 });
