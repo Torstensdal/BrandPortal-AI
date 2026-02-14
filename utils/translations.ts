@@ -1,1 +1,1 @@
-export const translations = { da: {} };
+export const translations: any = { da: { nav_dashboard: 'Overblik' }, en: { nav_dashboard: 'Overview' } };

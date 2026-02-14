@@ -1,0 +1,2 @@
+import React from 'react';
+export const SocialPost: React.FC<any> = (props) => <div className="p-10 border rounded-3xl bg-white shadow-xl"><h2>SocialPost</h2><p>Dette er kildekoden for SocialPost.</p></div>;

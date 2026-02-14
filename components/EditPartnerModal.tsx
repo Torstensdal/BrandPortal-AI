@@ -1,0 +1,2 @@
+import React from 'react';
+export const EditPartnerModal: React.FC<any> = (props) => <div className="p-10 border rounded-3xl bg-white shadow-xl"><h2>EditPartnerModal</h2><p>Dette er kildekoden for EditPartnerModal.</p></div>;

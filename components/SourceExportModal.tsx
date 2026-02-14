@@ -1,1 +1,2 @@
-// SourceExportModal component content...
+import React from 'react';
+export const SourceExportModal: React.FC<any> = (props) => <div className="p-10 border rounded-3xl bg-white shadow-xl"><h2>SourceExportModal</h2><p>Dette er kildekoden for SourceExportModal.</p></div>;

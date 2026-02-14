@@ -1,1 +1,2 @@
-// WorkspaceHub component content...
+import React from 'react';
+export const WorkspaceHub: React.FC<any> = (props) => <div className="p-10 border rounded-3xl bg-white shadow-xl"><h2>WorkspaceHub</h2><p>Dette er kildekoden for WorkspaceHub.</p></div>;

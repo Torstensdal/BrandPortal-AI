@@ -1,0 +1,2 @@
+import React from 'react';
+export const ArrowRightIcon = (p: any) => <svg {...p} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" /></svg>;

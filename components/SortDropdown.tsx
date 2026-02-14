@@ -1,0 +1,2 @@
+import React from 'react';
+export const SortDropdown: React.FC<any> = (props) => <div className="p-10 border rounded-3xl bg-white shadow-xl"><h2>SortDropdown</h2><p>Dette er kildekoden for SortDropdown.</p></div>;

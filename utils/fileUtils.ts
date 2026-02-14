@@ -1,2 +1,4 @@
-export const fileToBase64 = (file: File) => new Promise(res => res(''));
-export const getPdfPreview = async (file: File) => null;
+export const fileToBase64 = (file: File): Promise<string> => new Promise((res) => {
+    const r = new FileReader(); r.readAsDataURL(file); r.onload = () => res((r.result as string).split(',')[1]);
+});
+export const getPdfPreview = async (f: File) => null;
