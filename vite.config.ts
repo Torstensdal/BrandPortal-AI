@@ -9,9 +9,9 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
-    host: 'localhost',
+    host: '127.0.0.1',
     hmr: {
-      overlay: false // VIGTIGT: Deaktiverer overlay der får din browser til at hænge ved fejl
+      overlay: false
     }
   },
   resolve: {
