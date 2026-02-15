@@ -2,41 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ============================================================================
-   TEMPORARY FIX: Make dark backgrounds visible
-   ============================================================================ */
-
-/* Force light theme for debugging */
-body {
-  background: white !important;
-  color: #1e293b !important;
-}
-
-/* Override dark backgrounds */
-.bg-slate-950,
-.bg-slate-900,
-.bg-gray-950,
-.bg-gray-900 {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+/* EMERGENCY FIX - Make everything visible */
+* {
   color: white !important;
 }
 
-/* Make sure text is always visible */
-* {
-  color: inherit;
+.bg-slate-950, .bg-slate-900 {
+  background: #764ba2 !important;
 }
 
-/* Ensure flex containers are visible */
-.flex {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+body {
+  background: white !important;
 }
-
-/* Debug helper - shows element boundaries */
-.h-screen {
-  min-height: 100vh;
-  outline: 2px solid rgba(0, 255, 0, 0.3);
-}
-
-/* ============================================================================
-   END TEMPORARY FIX
-   ============================================================================ */
