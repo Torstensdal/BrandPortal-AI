@@ -4,3 +4,5 @@ dist/
 .DS_Store
 package-lock.json
 *.log
+.vercel
+.env*.local

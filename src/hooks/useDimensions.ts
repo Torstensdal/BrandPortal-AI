@@ -1,0 +1,1 @@
+export const useDimensions = (ref: any) => ({ w: 0, h: 0 });

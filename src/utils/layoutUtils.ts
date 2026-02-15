@@ -1,0 +1,1 @@
+export const gridColumns = (n: number) => 'grid-cols-' + n;

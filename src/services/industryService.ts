@@ -1,0 +1,1 @@
+export const getIndustries = () => ['SaaS', 'Tech', 'Manufacturing'];

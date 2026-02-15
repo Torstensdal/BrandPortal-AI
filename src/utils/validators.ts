@@ -1,0 +1,1 @@
+export const isEmail = (e: string) => /^\S+@\S+\.\S+$/.test(e);

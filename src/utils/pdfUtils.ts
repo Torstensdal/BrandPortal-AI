@@ -1,0 +1,1 @@
+export const toPdf = (d: any) => 'pdf-buffer';

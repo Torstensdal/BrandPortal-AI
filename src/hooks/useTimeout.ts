@@ -1,0 +1,1 @@
+export const useTimeout = (cb: any, d: number) => { };

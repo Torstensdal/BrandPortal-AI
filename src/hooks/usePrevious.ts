@@ -1,0 +1,1 @@
+export const usePrevious = (v: any) => v;

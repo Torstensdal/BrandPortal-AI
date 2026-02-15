@@ -1,0 +1,1 @@
+export const set = (k:string, v:any) => localStorage.setItem('BP_' + k, JSON.stringify(v));

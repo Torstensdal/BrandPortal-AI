@@ -1,0 +1,1 @@
+export const mapById = (a: any[]) => new Map(a.map(i => [i.id, i]));

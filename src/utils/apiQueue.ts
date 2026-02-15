@@ -1,0 +1,1 @@
+export const queueTask = (t: any) => t();

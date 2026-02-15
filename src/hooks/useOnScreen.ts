@@ -1,0 +1,1 @@
+export const useOnScreen = (ref: any) => false;

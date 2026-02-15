@@ -1,0 +1,1 @@
+export const logErr = (e: any) => console.error('[BP-ERROR]', e);

@@ -1,0 +1,1 @@
+export const getStats = async () => ({ reach: 84200, growth: 12.5 });

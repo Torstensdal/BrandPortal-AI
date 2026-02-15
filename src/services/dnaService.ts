@@ -1,0 +1,1 @@
+export const analyzeDna = (c: any) => ({ score: 98, strength: 'Brand Consistency' });

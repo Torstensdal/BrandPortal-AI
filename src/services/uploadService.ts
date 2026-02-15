@@ -1,0 +1,1 @@
+export const upload = async (f: File) => ({ url: 'blob:' + f.name, id: Date.now().toString() });

@@ -1,0 +1,1 @@
+export const generateContent = async () => 'optimized marketing text';

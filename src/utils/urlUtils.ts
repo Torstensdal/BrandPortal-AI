@@ -1,0 +1,1 @@
+export const getDomain = (u: string) => u.replace(/^https?:\/\//, '').split('/')[0];

@@ -1,0 +1,1 @@
+export const getExt = (f: string) => f.split('.').pop() || '';

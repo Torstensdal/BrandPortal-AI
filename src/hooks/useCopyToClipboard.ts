@@ -1,0 +1,1 @@
+export const useCopyToClipboard = () => [null, (t:string)=>{ }];

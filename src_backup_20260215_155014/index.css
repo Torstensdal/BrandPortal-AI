@@ -1,0 +1,18 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* FIX: Synlige farver */
+body {
+  background: white !important;
+  color: black !important;
+}
+
+.bg-slate-950, .bg-slate-900 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+}
+
+* {
+  outline: 1px solid rgba(0,255,0,0.1);
+}

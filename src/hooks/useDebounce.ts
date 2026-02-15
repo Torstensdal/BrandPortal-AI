@@ -1,0 +1,1 @@
+export const useDebounce = (v: any) => v;

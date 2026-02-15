@@ -1,0 +1,1 @@
+export const notify = (msg: string) => console.log('Notify:', msg);

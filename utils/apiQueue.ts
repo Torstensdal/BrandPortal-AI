@@ -1,1 +1,0 @@
-export const addApiTask = (t: any) => t();

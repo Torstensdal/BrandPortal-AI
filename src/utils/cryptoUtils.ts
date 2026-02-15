@@ -1,0 +1,1 @@
+export const hash = (s: string) => btoa(s);

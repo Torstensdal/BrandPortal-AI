@@ -1,0 +1,1 @@
+export const useLocalStorage = (k: string) => [null, (v:any)=>{ }];

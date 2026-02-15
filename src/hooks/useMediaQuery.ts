@@ -1,0 +1,1 @@
+export const useMediaQuery = (q: string) => false;

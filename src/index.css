@@ -1,16 +1,14 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* EMERGENCY FIX - Make everything visible */
-* {
-  color: white !important;
+:root {
+  --brand-primary: #6366f1;
+  --bg-app: #f8fafc;
+  --text-primary: #0f172a;
 }
-
-.bg-slate-950, .bg-slate-900 {
-  background: #764ba2 !important;
+html[data-theme="dark"] {
+  --bg-app: #020617;
+  --text-primary: #f8fafc;
 }
-
-body {
-  background: white !important;
-}
+body { background-color: var(--bg-app); color: var(--text-primary); font-family: 'Inter', sans-serif; transition: all 0.3s ease; }

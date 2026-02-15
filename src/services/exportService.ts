@@ -1,0 +1,1 @@
+export const exportData = async (d: any) => new Blob([JSON.stringify(d)], { type: 'application/json' });

@@ -1,0 +1,1 @@
+export const login = async (email: string) => ({ user: { email }, token: 'enterprise-token-' + Date.now() });

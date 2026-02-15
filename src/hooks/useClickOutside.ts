@@ -1,0 +1,1 @@
+export const useClickOutside = (ref: any, cb: any) => { };

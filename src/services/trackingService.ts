@@ -1,0 +1,1 @@
+export const trackEvent = (name: string, p: any) => console.debug('[AETHER-TRACK]', name, p);

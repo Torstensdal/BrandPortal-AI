@@ -1,0 +1,1 @@
+export const useEventListener = (e: string, h: any) => { };

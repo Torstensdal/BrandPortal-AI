@@ -1,0 +1,1 @@
+export const useInterval = (cb: any, d: number) => { };
